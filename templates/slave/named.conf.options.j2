@@ -1,0 +1,29 @@
+// {{ ansible_managed }}
+
+acl trusted {
+{% for network in acl %}
+    {{ network }};
+{% endfor %}
+};
+
+options {
+    directory "{{ cache_directory }}";
+
+    recursion {{ recursion }};
+    allow-recursion { 
+        localhost; 
+        trusted; 
+    };
+
+    forwarders {
+    {% for forwarder in forwarders %}
+        {{ forwarder }};
+    {% endfor %}
+    };
+
+    dnssec-validation auto;
+
+    auth-nxdomain no;    # conform to RFC1035
+    listen-on { any; };
+    listen-on-v6 { any; };
+};

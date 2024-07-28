@@ -1,0 +1,22 @@
+; {{ ansible_managed }}
+
+$TTL    604800
+@       IN      SOA     {{ groups['dns'] | map('extract', hostvars) | selectattr('dns_role', 'eq', 'master') | map(attribute='ansible_hostname') | first }}.{{ zones.revers }}. admin.{{ zones.revers }}. (
+                        {{ ansible_date_time.epoch }}        ; Serial
+                        {{ zone_settings.refresh }}          ; Refresh
+                        {{ zone_settings.retry }}            ; Retry
+                        {{ zone_settings.expire }}           ; Expire
+                        {{ zone_settings.ttl }} )            ; Negative Cache TTL
+
+
+
+; Name servers
+{% for host in groups['dns'] %}
+@       IN      NS      {{ hostvars[host]['inventory_hostname_short'] }}.{{ zones.revers }}.
+{% endfor %}
+
+
+; PTR records
+{% for host in groups['dns'] %}
+{{ hostvars[host]['ansible_host'].split('.')[-1] }}     IN      PTR     {{ hostvars[host]['inventory_hostname_short'] }}.{{ zones.revers }}.
+{% endfor %}

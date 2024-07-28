@@ -1,0 +1,32 @@
+---
+packages:
+  - bind9
+  - bind9-dnsutils
+  - bind9-doc
+  - bind9-host
+  - bind9-utils
+  - bind9utils
+
+zones_folder: "/etc/bind/zones"
+
+cache_directory: "/var/cache/bind"
+
+recursion: "yes"
+
+zone_settings:
+  serial: 10 # {{ ansible_date_time.epoch }}
+  refresh: 604800
+  retry: 86400
+  expire: 2419200
+  ttl: 604800
+
+forwarders:
+  - "1.1.1.1"
+  - "8.8.8.8"
+
+zones:
+  forwards: "alexhost.vg"
+  revers: "192.168.16"
+
+acl:
+  - "192.168.16.0/24"

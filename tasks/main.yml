@@ -1,0 +1,22 @@
+---
+- name: Install BIND packages
+  ansible.builtin.import_tasks: tasks/01-install.yaml
+  tags: [install]
+
+- name: Configure DNS master node
+  ansible.builtin.import_tasks: tasks/02-master.yaml
+  when: dns_role == "master"
+  tags: [configure]
+
+- name: Configure DNS master node
+  ansible.builtin.import_tasks: tasks/03-slave.yaml
+  when: dns_role == "slave"
+  tags: [configure]
+
+- name: Enable bind service
+  ansible.builtin.systemd:
+    name: bind9.service
+    state: started
+    enabled: true
+    masked: false
+  tags: [install]

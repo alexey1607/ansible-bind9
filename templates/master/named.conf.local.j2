@@ -1,0 +1,27 @@
+// {{ ansible_managed }}
+
+zone "{{ zones.forwards }}" {
+    type master;
+    file "{{ zones_folder }}/{{ zones.forwards }}";
+    allow-transfer { 
+    {% for host in groups['dns'] %}
+    {% if hostvars[host]['dns_role'] == 'slave' %}
+        {{ hostvars[host]['ansible_default_ipv4']['address'] }};
+    {% endif %}
+    {% endfor %}
+    };
+};
+
+zone "{{ zones.revers.split('.') | reverse | join('.') }}.in-addr.arpa" {
+    type master;
+    file "{{ zones_folder }}/{{ zones.revers }}";
+    allow-transfer { 
+    {% for host in groups['dns'] %}
+    {% if hostvars[host]['dns_role'] == 'slave' %}
+        {{ hostvars[host]['ansible_default_ipv4']['address'] }};
+    {% endif %}
+    {% endfor %}
+    };
+};
+
+

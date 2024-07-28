@@ -1,0 +1,44 @@
+// {{ ansible_managed }}
+
+acl trusted {
+{% for network in acl %}
+    {{ network }};
+{% endfor %}
+};
+
+options {
+
+    directory "{{ cache_directory }}";
+
+    recursion {{ recursion }};
+    allow-recursion { trusted; };
+
+    allow-query {
+        localhost;
+        trusted; 
+    };
+
+    forwarders {
+    {% for forwarder in forwarders %}
+        {{ forwarder }};
+    {% endfor %}
+    };
+
+    allow-transfer {
+    {% for host in groups['dns'] %}
+    {% if hostvars[host]['dns_role'] == 'slave' %}
+        {{ hostvars[host]['ansible_default_ipv4']['address'] }};
+    {% endif %}
+    {% endfor %}
+    };
+
+    dnssec-validation auto;
+
+    auth-nxdomain no;    # conform to RFC1035
+
+    listen-on { any; };
+
+    listen-on-v6 { any; };
+    
+};
+
