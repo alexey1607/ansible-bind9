@@ -54,7 +54,30 @@ bind.yaml
       revers: "192.168.16"
     acl:
       - "192.168.16.0/24"
+    cname:
+      - name: "dns-1"
+        target: "ns-1"
+      - name: "dns-2"
+        target: "ns-2"
+      - name: "dns-3"
+        target: "ns-3"
 ```
+
+bind.yaml
+```
+---
+- name: Install BIND9 сервер
+  hosts: dns
+  roles:
+    - bind9
+  vars:
+    zones:
+      forwards: "example.com"
+      revers: "192.168.16"
+    acl:
+      - "192.168.16.0/24"
+```
+
 hists.ini
 ```
 [dns]

@@ -5,7 +5,7 @@ zone "{{ zones.forwards }}" {
     file "{{ zones_folder }}/{{ zones.forwards }}";
     masters { 
     {% for host in groups['dns'] %}
-    {% if hostvars[host]['dns_role'] == 'slave' %}
+    {% if hostvars[host]['dns_role'] == 'master' %}
         {{ hostvars[host]['ansible_default_ipv4']['address'] }};
     {% endif %}
     {% endfor %}
@@ -17,7 +17,7 @@ zone "{{ zones.revers.split('.') | reverse | join('.') }}.in-addr.arpa" {
     file "{{ zones_folder }}/{{ zones.revers }}";
     masters { 
     {% for host in groups['dns'] %}
-    {% if hostvars[host]['dns_role'] == 'slave' %}
+    {% if hostvars[host]['dns_role'] == 'master' %}
         {{ hostvars[host]['ansible_default_ipv4']['address'] }};
     {% endif %}
     {% endfor %}
