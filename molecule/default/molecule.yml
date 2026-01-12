@@ -1,0 +1,50 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: bind-master-debian
+    image: geerlingguy/docker-debian11-ansible:latest
+    command: ""
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
+    groups:
+      - dns
+  - name: bind-slave-debian
+    image: geerlingguy/docker-debian11-ansible:latest
+    command: ""
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
+    groups:
+      - dns
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      all:
+        zones:
+          forwards: "test.local"
+          revers: "172.17.0"
+        acl:
+          - "172.17.0.0/16"
+        dns_records:
+          a_records:
+            - name: "web"
+              ip: "172.17.0.100"
+          cname:
+            - name: "www"
+              target: "web"
+    host_vars:
+      bind-master-debian:
+        dns_role: master
+        ansible_host: 172.17.0.2
+      bind-slave-debian:
+        dns_role: slave
+        ansible_host: 172.17.0.3
+verifier:
+  name: ansible

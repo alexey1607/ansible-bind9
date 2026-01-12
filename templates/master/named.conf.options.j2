@@ -32,7 +32,20 @@ options {
     {% endfor %}
     };
 
-    dnssec-validation auto;
+    dnssec-validation {{ dnssec_validation }};
+{% if dnssec_enable %}
+    dnssec-enable yes;
+{% if dnssec_lookaside != 'auto' %}
+    dnssec-lookaside {{ dnssec_lookaside }};
+{% endif %}
+{% endif %}
+
+{% if rate_limit_enabled %}
+    rate-limit {
+        responses-per-second {{ rate_limit_responses_per_second }};
+        window {{ rate_limit_window }};
+    };
+{% endif %}
 
     auth-nxdomain no;    # conform to RFC1035
 

@@ -1,0 +1,39 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Check if BIND service is running
+      ansible.builtin.service:
+        name: "{{ bind_service_name }}"
+        state: started
+      check_mode: true
+      register: service_status
+      failed_when: service_status.changed
+
+    - name: Verify BIND is listening on port 53
+      ansible.builtin.wait_for:
+        port: 53
+        timeout: 5
+
+    - name: Test DNS resolution on master
+      ansible.builtin.command:
+        cmd: dig @localhost {{ zones.forwards }} SOA +short
+      register: dns_query
+      changed_when: false
+      failed_when: dns_query.rc != 0
+      when: dns_role == "master"
+
+    - name: Verify zone files exist on master
+      ansible.builtin.stat:
+        path: "{{ zones_folder }}/{{ zones.forwards }}"
+      register: zone_file
+      failed_when: not zone_file.stat.exists
+      when: dns_role == "master"
+
+    - name: Verify configuration syntax
+      ansible.builtin.command:
+        cmd: named-checkconf {{ bind_config_path }}/named.conf
+      changed_when: false
+      register: checkconf
+      failed_when: checkconf.rc != 0

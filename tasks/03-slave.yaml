@@ -2,19 +2,19 @@
 - name: Configure SLAVE | named.conf.options
   ansible.builtin.template:
     src: slave/named.conf.options.j2
-    dest: "/etc/bind/named.conf.options"
+    dest: "{{ bind_config_path }}/named.conf.options"
     owner: root
-    group: bind
+    group: "{{ bind_group }}"
     mode: "0644"
-  notify: Restart bind9
+  notify: Reload bind
   tags: [configure]
 
 - name: Configure SLAVE | named.conf.local
   ansible.builtin.template:
     src: slave/named.conf.local.j2
-    dest: "/etc/bind/named.conf.local"
+    dest: "{{ bind_config_path }}/named.conf.local"
     owner: root
-    group: bind
+    group: "{{ bind_group }}"
     mode: "0644"
-  notify: Restart bind9
+  notify: Reload bind
   tags: [configure]

@@ -1,0 +1,31 @@
+// {{ ansible_managed }}
+// BIND9 Logging Configuration
+
+logging {
+    channel default_log {
+        file "{{ bind_log_directory }}/default.log" versions 3 size 5m;
+        severity info;
+        print-time yes;
+        print-severity yes;
+        print-category yes;
+    };
+
+{% if bind_log_categories is defined %}
+{% for category in bind_log_categories %}
+    channel {{ category.name }}_log {
+        file "{{ bind_log_directory }}/{{ category.name }}.log" versions 3 size 5m;
+        severity {{ category.severity }};
+        print-time yes;
+        print-severity yes;
+        print-category yes;
+    };
+{% endfor %}
+{% endif %}
+
+    category default { default_log; };
+{% if bind_log_categories is defined %}
+{% for category in bind_log_categories %}
+    category {{ category.name }} { {{ category.name }}_log; };
+{% endfor %}
+{% endif %}
+};

@@ -1,4 +1,11 @@
 ---
+- name: Load OS-specific variables
+  ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}.yml"
+    - "{{ ansible_os_family }}.yml"
+  tags: [always]
+
 - name: Install BIND packages
   ansible.builtin.import_tasks: tasks/01-install.yaml
   tags: [install]
@@ -8,14 +15,22 @@
   when: dns_role == "master"
   tags: [configure]
 
-- name: Configure DNS master node
+- name: Configure DNS slave node
   ansible.builtin.import_tasks: tasks/03-slave.yaml
   when: dns_role == "slave"
   tags: [configure]
 
+- name: Configure logging
+  ansible.builtin.import_tasks: tasks/05-logging.yaml
+  tags: [logging]
+
+- name: Validate BIND configuration
+  ansible.builtin.import_tasks: tasks/04-validate.yaml
+  tags: [validate]
+
 - name: Enable bind service
   ansible.builtin.systemd:
-    name: bind9.service
+    name: "{{ bind_service_name }}.service"
     state: started
     enabled: true
     masked: false

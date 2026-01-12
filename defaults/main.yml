@@ -1,13 +1,12 @@
 ---
-packages:
-  - bind9
-  - bind9-dnsutils
-  - bind9-doc
-  - bind9-host
-  - bind9-utils
-  - bind9utils
+# These variables will be overridden by OS-specific vars
+bind_packages: []
+bind_service_name: bind9
+bind_config_path: /etc/bind
+bind_user: bind
+bind_group: bind
 
-zones_folder: "/etc/bind/zones"
+zones_folder: "{{ bind_config_path }}/zones"
 
 cache_directory: "/var/cache/bind"
 
@@ -30,3 +29,55 @@ zones:
 
 acl:
   - "192.168.16.0/24"
+
+# Custom DNS records
+dns_records:
+  a_records: []
+  # Example:
+  # - name: "server1"
+  #   ip: "192.168.16.100"
+  
+  mx_records: []
+  # Example:
+  # - priority: 10
+  #   host: "mail.example.com."
+  
+  txt_records: []
+  # Example:
+  # - name: "@"
+  #   value: "v=spf1 mx ~all"
+  
+  srv_records: []
+  # Example:
+  # - name: "_ldap._tcp"
+  #   priority: 0
+  #   weight: 100
+  #   port: 389
+  #   target: "ldap.example.com."
+
+cname: []
+# Example:
+# - name: "dns-1"
+#   target: "ns-1"
+
+# Logging configuration
+bind_logging_enabled: false
+bind_log_directory: "/var/log/named"
+bind_log_categories:
+  - name: "default"
+    severity: "info"
+  - name: "queries"
+    severity: "info"
+  - name: "security"
+    severity: "warning"
+
+# DNSSEC configuration
+dnssec_validation: "auto"
+dnssec_enable: false
+dnssec_lookaside: "auto"
+
+# Rate limiting (DDoS protection)
+rate_limit_enabled: false
+rate_limit_responses_per_second: 5
+rate_limit_window: 5
+

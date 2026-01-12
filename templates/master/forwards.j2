@@ -17,13 +17,41 @@ $TTL    604800
 
 
 ; A records
-{% for host in groups['all'] %}
+{% for host in groups['dns'] %}
 {{ host }}             IN                A             {{ hostvars[host]['ansible_host'] }}
 {% endfor %}
+
+{% if dns_records.a_records is defined and dns_records.a_records | length > 0 %}
+; Custom A records
+{% for record in dns_records.a_records %}
+{{ record.name }}      IN                A             {{ record.ip }}
+{% endfor %}
+{% endif %}
 
 {% if cname is defined %}
 ; CNAME records
 {% for item in cname %}
 {{ item.name }}         IN                CNAME         {{ item.target }}.{{ zones.forwards }}.
+{% endfor %}
+{% endif %}
+
+{% if dns_records.mx_records is defined and dns_records.mx_records | length > 0 %}
+; MX records
+{% for record in dns_records.mx_records %}
+@                       IN                MX            {{ record.priority }} {{ record.host }}
+{% endfor %}
+{% endif %}
+
+{% if dns_records.txt_records is defined and dns_records.txt_records | length > 0 %}
+; TXT records
+{% for record in dns_records.txt_records %}
+{{ record.name }}       IN                TXT           "{{ record.value }}"
+{% endfor %}
+{% endif %}
+
+{% if dns_records.srv_records is defined and dns_records.srv_records | length > 0 %}
+; SRV records
+{% for record in dns_records.srv_records %}
+{{ record.name }}       IN                SRV           {{ record.priority }} {{ record.weight }} {{ record.port }} {{ record.target }}
 {% endfor %}
 {% endif %}

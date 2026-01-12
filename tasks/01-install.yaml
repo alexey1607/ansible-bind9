@@ -1,16 +1,16 @@
 ---
 - name: Install BIND packages
-  ansible.builtin.apt:
+  ansible.builtin.package:
     name: "{{ item }}"
     state: present
-  loop: "{{ packages }}"
+  loop: "{{ bind_packages }}"
   tags: [install]
 
 - name: Create zones directory
   ansible.builtin.file:
     path: "{{ zones_folder }}"
     state: directory
-    owner: bind
-    group: bind
+    owner: "{{ bind_user }}"
+    group: "{{ bind_group }}"
     mode: "0755"
   tags: [install]

@@ -1,0 +1,26 @@
+---
+- name: Validate BIND configuration syntax
+  ansible.builtin.command:
+    cmd: named-checkconf {{ bind_config_path }}/named.conf
+  register: checkconf_result
+  changed_when: false
+  failed_when: checkconf_result.rc != 0
+  tags: [validate]
+
+- name: Validate forward zone file
+  ansible.builtin.command:
+    cmd: named-checkzone {{ zones.forwards }} {{ zones_folder }}/{{ zones.forwards }}
+  register: checkzone_forward
+  changed_when: false
+  failed_when: checkzone_forward.rc != 0
+  when: dns_role == "master"
+  tags: [validate]
+
+- name: Validate reverse zone file
+  ansible.builtin.command:
+    cmd: named-checkzone {{ zones.revers.split('.') | reverse | join('.') }}.in-addr.arpa {{ zones_folder }}/{{ zones.revers }}
+  register: checkzone_reverse
+  changed_when: false
+  failed_when: checkzone_reverse.rc != 0
+  when: dns_role == "master"
+  tags: [validate]

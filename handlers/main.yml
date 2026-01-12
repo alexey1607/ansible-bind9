@@ -1,6 +1,13 @@
 ---
-- name: Restart bind9
+- name: Reload bind
   ansible.builtin.systemd:
-    name: bind9.service
+    name: "{{ bind_service_name }}.service"
+    state: reloaded
+  failed_when: false
+  listen: Reload bind
+
+- name: Restart bind
+  ansible.builtin.systemd:
+    name: "{{ bind_service_name }}.service"
     state: restarted
-    enabled: true
+  listen: Restart bind
