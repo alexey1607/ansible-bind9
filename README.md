@@ -5,7 +5,7 @@ Ansible role for installing and configuring BIND9 DNS server with support for ma
 
 ## Features
 
-- Support for Debian/Ubuntu and RedHat/CentOS platforms
+- Support for Debian/Ubuntu platforms
 - Master-slave DNS server configuration
 - Automatic configuration validation before applying changes
 - Custom DNS records (A, CNAME, MX, TXT, SRV)
@@ -15,7 +15,7 @@ Ansible role for installing and configuring BIND9 DNS server with support for ma
 ## Requirements
 
 - Ansible >= 2.1
-- Target systems: Debian/Ubuntu or RedHat/CentOS
+- Target systems: Debian/Ubuntu
 
 Installation
 --------------
@@ -34,8 +34,8 @@ Role Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `bind_service_name` | `bind9` / `named` | Service name (OS-specific) |
-| `bind_config_path` | `/etc/bind` / `/etc/named` | Configuration path (OS-specific) |
+| `bind_service_name` | `bind9` | BIND service name |
+| `bind_config_path` | `/etc/bind` | Configuration directory path |
 | `zones_folder` | `{{ bind_config_path }}/zones` | Directory for zone files |
 | `cache_directory` | `/var/cache/bind` | BIND cache directory |
 | `recursion` | `yes` | Allow DNS recursion |
@@ -172,11 +172,6 @@ ansible-playbook -i inventory.ini playbook.yaml --tags validate
 |----------|----------|-------------|
 | `dns_role` | Yes | Either `master` or `slave` |
 | `ansible_host` | Yes | IP address of the DNS server |
-
-## Platform Support
-
-- **Debian/Ubuntu**: Full support with `bind9` package
-- **RedHat/CentOS**: Full support with `bind` package
 
 License
 -------

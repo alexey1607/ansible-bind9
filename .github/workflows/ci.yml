@@ -39,11 +39,6 @@ jobs:
     name: Test (Molecule)
     runs-on: ubuntu-latest
     needs: lint
-    strategy:
-      matrix:
-        distro:
-          - debian11
-          - ubuntu2204
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -1,8 +1,9 @@
 ---
 - name: Install BIND packages
-  ansible.builtin.package:
+  ansible.builtin.apt:
     name: "{{ item }}"
     state: present
+    update_cache: yes
   loop: "{{ bind_packages }}"
   tags: [install]
 

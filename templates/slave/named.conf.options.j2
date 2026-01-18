@@ -21,12 +21,9 @@ options {
     {% endfor %}
     };
 
-    dnssec-validation {{ dnssec_validation }};
 {% if dnssec_enable %}
     dnssec-enable yes;
-{% if dnssec_lookaside != 'auto' %}
-    dnssec-lookaside {{ dnssec_lookaside }};
-{% endif %}
+    dnssec-validation auto;
 {% endif %}
 
 {% if rate_limit_enabled %}

@@ -3,8 +3,6 @@
 ## [Develop] - 2026-01-12
 
 ### Added
-- Multi-platform support (Debian/Ubuntu and RedHat/CentOS)
-- OS-specific variables for different distributions
 - BIND configuration validation using named-checkconf and named-checkzone
 - Support for custom DNS records (A, MX, TXT, SRV)
 - Comprehensive logging configuration with customizable log categories
@@ -17,7 +15,6 @@
 
 ### Changed
 - Updated README with comprehensive documentation
-- Refactored tasks to use OS-agnostic variables
 - Improved zone templates with support for custom records
 - Changed handler behavior to use reload for minimal downtime
 

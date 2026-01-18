@@ -10,6 +10,9 @@ zone "{{ zones.forwards }}" {
     {% endif %}
     {% endfor %}
     };
+{% if dnssec_enable %}
+    inline-signing no;
+{% endif %}
 };
 
 zone "{{ zones.revers.split('.') | reverse | join('.') }}.in-addr.arpa" {
@@ -22,4 +25,7 @@ zone "{{ zones.revers.split('.') | reverse | join('.') }}.in-addr.arpa" {
     {% endif %}
     {% endfor %}
     };
+{% if dnssec_enable %}
+    inline-signing no;
+{% endif %}
 };
